@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Welcome to E-Commerce</h1>
+    <div class="products">
+        <% products.forEach(product => { %>
+            <div class="product">
+                <img src="/<%= product.image %>" alt="<%= product.name %>">
+                <h2><%= product.name %></h2>
+                <p>Price: $<%= product.price %></p>
+                <p>Discount: <%= product.discount %>%</p>
+                <p><%= product.specifications %></p>
+                <button>Add to Cart</button>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>
