@@ -1,44 +1,40 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "node18" // Make sure to configure NodeJS 18 under Jenkins Global Tools Configuration
+    }
+
     environment {
-        APP_NAME = "e-commerce"
-        NODE_ENV = "production"
-        PORT = "3030"
+        APP_DIR = "e-commerce" // Change if your app folder is different
     }
 
     stages {
-        stage('Clone Code from GitHub') {
+        stage('Clone Repository') {
             steps {
-                echo "Cloning code from GitHub"
-                checkout scm
+                git branch: 'main', url: 'https://github.com/venkatesh20000/e-commerce.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo " Installing npm dependencies"
                 sh 'npm install'
             }
         }
 
-        stage('Run App (Development Purpose)') {
+        stage('Run App') {
             steps {
-                echo "Starting the Express.js App"
-                // Kill if already running on port 3030
-                sh 'fuser -k 3030/tcp || true'
-                // Run in background
-                sh 'nohup npm start &'
+                sh 'npm start &'
             }
         }
     }
 
     post {
-        success {
-            echo "App deployed on http://<your-ec2-public-ip>:3030"
-        }
         failure {
-            echo "Build failed. Please check Jenkins logs."
+            echo '❌ Build Failed'
+        }
+        success {
+            echo '✅ App Deployed Successfully'
         }
     }
 }
