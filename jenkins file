@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "e-commerce"
+        NODE_ENV = "production"
+        PORT = "3030"
+    }
+
+    stages {
+        stage('Clone Code from GitHub') {
+            steps {
+                echo "Cloning code from GitHub"
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo " Installing npm dependencies"
+                sh 'npm install'
+            }
+        }
+
+        stage('Run App (Development Purpose)') {
+            steps {
+                echo "Starting the Express.js App"
+                // Kill if already running on port 3030
+                sh 'fuser -k 3030/tcp || true'
+                // Run in background
+                sh 'nohup npm start &'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "App deployed on http://<your-ec2-public-ip>:3030"
+        }
+        failure {
+            echo "Build failed. Please check Jenkins logs."
+        }
+    }
+}
